@@ -1,0 +1,10 @@
+#!/bin/bash
+if [ $# -ne 4 ]; then
+    echo "usage: $0 buildpath lang region timezone"
+    exit 1
+fi
+sed -i.bak -e "s/ro.product.locale.language=.*/ro.product.locale.language=$2/" -e "s/ro.product.locale.region=.*/ro.product.locale.region=$3/" $1
+echo "persist.sys.timezone=$4" >> $1
+version=`cat $1 | grep ro.build.version.incremental= | sed 's/ro.build.version.incremental=//'`
+echo "ro.modversion=MIUIKitchen-$version-$2" >> $1
+rm $1.bak

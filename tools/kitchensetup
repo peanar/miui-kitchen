@@ -16,95 +16,66 @@ function loadlist() {
     tras=( `cat $traslist` )
 }
 
-function fixsettings() {
-    sed -i.bak -e '/\"0x7f080000\"/i \
-    <public type=\"array\" name=\"multi_sim_entries\" id=\"0x7f07004f\" \/> \
-    <public type=\"array\" name=\"multi_sim_summaries\" id=\"0x7f070050\" \/> \
-    <public type=\"array\" name=\"multi_sim_values\" id=\"0x7f070051\" \/> \
-    <public type=\"array\" name=\"multi_sim_entries_voice\" id=\"0x7f070052\" \/> \
-    <public type=\"array\" name=\"multi_sim_summaries_voice\" id=\"0x7f070053\" \/> \
-    <public type=\"array\" name=\"multi_sim_values_voice\" id=\"0x7f070054\" \/>' -e '/\"0x7f0c0000\"/i \
-    <public type=\"string\" name=\"APKTOOL_DUMMY_0614\" id=\"0x7f0b064a\" \/> \
-    <public type=\"string\" name=\"APKTOOL_DUMMY_0615\" id=\"0x7f0b064b\" \/> \
-    <public type=\"string\" name=\"APKTOOL_DUMMY_0616\" id=\"0x7f0b064c\" \/> \
-    <public type=\"string\" name=\"sim_absent\" id=\"0x7f0b064d\" \/> \
-    <public type=\"string\" name=\"bluetooth_enter_pin_msg_hs\" id=\"0x7f0b064e\" \/> \
-    <public type=\"string\" name=\"bluetooth_ftp_acceptance_dialog_text\" id=\"0x7f0b064f\" \/> \
-    <public type=\"string\" name=\"bluetooth_ftp_connection_permission_request\" id=\"0x7f0b0650\" \/> \
-    <public type=\"string\" name=\"bluetooth_ftp_remember_choice\" id=\"0x7f0b0651\" \/> \
-    <public type=\"string\" name=\"bluetooth_ftp_request\" id=\"0x7f0b0652\" \/> \
-    <public type=\"string\" name=\"bluetooth_map_connection_permission_request\" id=\"0x7f0b0653\" \/> \
-    <public type=\"string\" name=\"bluetooth_mas_acceptance_dialog_text\" id=\"0x7f0b0654\" \/> \
-    <public type=\"string\" name=\"bluetooth_mas_remember_choice\" id=\"0x7f0b0655\" \/> \
-    <public type=\"string\" name=\"bluetooth_mas_request\" id=\"0x7f0b0656\" \/> \
-    <public type=\"string\" name=\"bluetooth_pbap_connection_permission_request\" id=\"0x7f0b0657\" \/> \
-    <public type=\"string\" name=\"bluetooth_profile_sap\" id=\"0x7f0b0658\" \/> \
-    <public type=\"string\" name=\"bluetooth_sap_acceptance_dialog_text\" id=\"0x7f0b0659\" \/> \
-    <public type=\"string\" name=\"bluetooth_sap_connection_permission_request\" id=\"0x7f0b065a\" \/> \
-    <public type=\"string\" name=\"bluetooth_sap_profile_summary_connected\" id=\"0x7f0b065b\" \/> \
-    <public type=\"string\" name=\"bluetooth_sap_profile_summary_not_connected\" id=\"0x7f0b065c\" \/> \
-    <public type=\"string\" name=\"bluetooth_sap_profile_summary_use_for\" id=\"0x7f0b065d\" \/> \
-    <public type=\"string\" name=\"bluetooth_sap_remember_choice\" id=\"0x7f0b065e\" \/> \
-    <public type=\"string\" name=\"bluetooth_sap_request\" id=\"0x7f0b065f\" \/> \
-    <public type=\"string\" name=\"data_summary\" id=\"0x7f0b0660\" \/> \
-    <public type=\"string\" name=\"data_title\" id=\"0x7f0b0661\" \/> \
-    <public type=\"string\" name=\"device_additional_status\" id=\"0x7f0b0662\" \/> \
-    <public type=\"string\" name=\"device_additional_status_summary\" id=\"0x7f0b0663\" \/> \
-    <public type=\"string\" name=\"multi_sim_settings_summary\" id=\"0x7f0b0664\" \/> \
-    <public type=\"string\" name=\"multi_sim_settings_title\" id=\"0x7f0b0665\" \/> \
-    <public type=\"string\" name=\"sel_sub_summary\" id=\"0x7f0b0666\" \/> \
-    <public type=\"string\" name=\"sel_sub_title\" id=\"0x7f0b0667\" \/> \
-    <public type=\"string\" name=\"select_subscription\" id=\"0x7f0b0668\" \/> \
-    <public type=\"string\" name=\"set_data_subscription_progress\" id=\"0x7f0b0669\" \/> \
-    <public type=\"string\" name=\"set_dds_failed\" id=\"0x7f0b066a\" \/> \
-    <public type=\"string\" name=\"set_dds_success\" id=\"0x7f0b066b\" \/> \
-    <public type=\"string\" name=\"sim_pin_attempts\" id=\"0x7f0b066c\" \/> \
-    <public type=\"string\" name=\"sim_pin_disabled\" id=\"0x7f0b066d\" \/> \
-    <public type=\"string\" name=\"sim_pin_enabled\" id=\"0x7f0b066e\" \/> \
-    <public type=\"string\" name=\"sms_summary\" id=\"0x7f0b066f\" \/> \
-    <public type=\"string\" name=\"sms_title\" id=\"0x7f0b0670\" \/> \
-    <public type=\"string\" name=\"status_esn_number\" id=\"0x7f0b0671\" \/> \
-    <public type=\"string\" name=\"subscription_01_summary\" id=\"0x7f0b0672\" \/> \
-    <public type=\"string\" name=\"subscription_01_title\" id=\"0x7f0b0673\" \/> \
-    <public type=\"string\" name=\"subscription_02_summary\" id=\"0x7f0b0674\" \/> \
-    <public type=\"string\" name=\"subscription_02_title\" id=\"0x7f0b0675\" \/> \
-    <public type=\"string\" name=\"voice_summary\" id=\"0x7f0b0676\" \/> \
-    <public type=\"string\" name=\"voice_title\" id=\"0x7f0b0677\" \/> \
-    <public type=\"string\" name=\"wifi_p2p_on_summary\" id=\"0x7f0b0678\" \/> \
-    <public type=\"string\" name=\"wifi_p2p_settings\" id=\"0x7f0b0679\" \/> \
-    <public type=\"string\" name=\"wifi_tether_transmit_power_error\" id=\"0x7f0b067a\" \/>' app/Settings/res/values/public.xml
-    rm app/Settings/res/values/public.xml.bak
-}
-
 function fixemail() {
-    sed -i.bak '/\"main_content\"\"/d' app/Email/res/values/ids.xml
+    sed -i.bak '/"main_content""/d' app/Email/res/values/ids.xml
     rm app/Email/res/values/ids.xml.bak
-    sed -i.bak '/\"main_content\"\"/d' app/Email/res/values/public.xml
+    sed -i.bak '/"main_content""/d' app/Email/res/values/public.xml
     rm app/Email/res/values/public.xml.bak
     #sed -i.bak 's/main_content\"/main_content/' app/Email/res/values-sw600dp/styles.xml
     #rm app/Email/res/values-sw600dp/styles.xml.bak
     #sed -i.bak 's/main_content\"/main_content/' app/Email/res/values-sw800dp-port/styles.xml
     #rm app/Email/res/values-sw800dp-port/styles.xml.bak
-    sed -i.bak '/main_content\"/d' app/Email/res/values-sw600dp/styles.xml
+    sed -i.bak '/main_content"/d' app/Email/res/values-sw600dp/styles.xml
     rm app/Email/res/values-sw600dp/styles.xml.bak
-    sed -i.bak '/main_content\"/d' app/Email/res/values-sw800dp-port/styles.xml
+    sed -i.bak '/main_content"/d' app/Email/res/values-sw800dp-port/styles.xml
     rm app/Email/res/values-sw800dp-port/styles.xml.bak
 }
 
 function fixframework() {
-    sed -i.bak 's/\"other\">\%d of \%d/\"other\">\%1\$d of \%2\$d/' framework/framework-res/res/values/plurals.xml
+    sed -i.bak 's/%d of %d/%1\$d of %2\$d/' framework/framework-res/res/values/plurals.xml
     rm framework/framework-res/res/values/plurals.xml.bak
-    sed -i.bak 's/\"other\">第 \%d 项，共 \%d 项/\"other\">第 \%1\$d 项，共 \%2\$d 项/' framework/framework-res/res/values-zh-rCN/plurals.xml
+    sed -i.bak 's/第 %d 项，共 %d 项/第 %1\$d 项，共 %2\$d 项/' framework/framework-res/res/values-zh-rCN/plurals.xml
     rm framework/framework-res/res/values-zh-rCN/plurals.xml.bak
+    sed -i.bak '/<\/resources>/i \
+    <item type="id" name="flag">false</item> \
+    <item type="id" name="titleContent">false</item> \
+    <item type="id" name="titlePrevious">false</item> \
+    <item type="id" name="titleNext">false</item> \
+    <item type="id" name="detaillayout">false</item> \
+    <item type="id" name="scrollview">false</item> \
+    <item type="id" name="parentlayout">false</item> \
+    <item type="id" name="componentGrid">false</item> \
+    <item type="id" name="resourcefile">false</item> \
+    <item type="id" name="componentTitle">false</item>' framework/framework-miui-res/res/values/ids.xml
+    rm framework/framework-miui-res/res/values/ids.xml.bak
+    sed -i.bak -e '/"0x03070000"/i \
+    <public type="array" name="android_config_statusBarIcons" id="0x0306000a" />' -e '/"0x030c0000"/i \
+    <public type="id" name="flag" id="0x030b008c" /> \
+    <public type="id" name="titleContent" id="0x030b008d" /> \
+    <public type="id" name="titlePrevious" id="0x030b008e" /> \
+    <public type="id" name="titleNext" id="0x030b008f" /> \
+    <public type="id" name="detaillayout" id="0x030b0090" /> \
+    <public type="id" name="scrollview" id="0x030b0091" /> \
+    <public type="id" name="parentlayout" id="0x030b0092" /> \
+    <public type="id" name="componentGrid" id="0x030b0093" /> \
+    <public type="id" name="resourcefile" id="0x030b0094" /> \
+    <public type="id" name="componentTitle" id="0x030b0095" />' framework/framework-miui-res/res/values/public.xml
+    rm framework/framework-miui-res/res/values/public.xml.bak
 }
 
 function fixmiuicompass() {
-    sed -i.bak 's/layout=\"@miui:layout\/android_transient_notification\"/layout=\"@android:layout\/transient_notification\"/' app/MiuiCompass/res/layout/main.xml
+    sed -i.bak 's/layout="@miui:layout\/android_transient_notification"/layout="@android:layout\/transient_notification"/' app/MiuiCompass/res/layout/main.xml
     rm app/MiuiCompass/res/layout/main.xml.bak
+}
+
+function fixmusic() {
+    sed -i.bak 's/%s, %d/%1$s, %2$d/' app/Music/res/values/plurals.xml
+    rm app/Music/res/values/plurals.xml.bak
 }
 
 function fix() {
     fixemail
+    fixmusic
     fixframework
     fixmiuicompass
 }
@@ -132,7 +103,7 @@ function decode() {
 }
 
 function xml_test() {
-    temp=`diff $LANGPATH/$LANG/${1}/res/${2} ${3}/${1}/res/${2}`
+    temp=`diff $LANGPATH/zh/${1}/res/${2} ${3}/${1}/res/${2}`
     if [ -n "$temp" ]; then
         echo "$1 $2 changed. Copy it manualy with change."
     fi
@@ -150,15 +121,14 @@ function test() {
 #$2 language
 #$3 path
 function xml_copy() {
-    cp -r $LANGPATH/$LANG/${1}/res/values-${2} ${3}/${1}/res/
+    cp -r --remove-destination $LANGPATH/$LANG/${1}/res/${2} ${3}/${1}/res/
 }
 
 function translate() {
     for files in ${tras[@]}; do
         xml_copy $(echo $files | tr ":" " ")
     done
-    sed -i.bak -e 's/ro.product.locale.language=zh/ro.product.locale.language=it/' -e 's/ro.product.locale.region=CN/ro.product.locale.region=IT/' rom/new/system/build.prop
-    rm rom/new/system/build.prop.bak
+    build_prop rom/new/system/build.prop it IT Europe/Rome
 }
 
 function setup() {
@@ -166,11 +136,14 @@ function setup() {
     mkdir -p $ROMPATH/miui/
     mkdir -p $ROMPATH/new/
     mkdir -p app
+    mkdir -p framework
+    mkdir -p apk
+    mkdir -p gapps
 }
 
 function extract() {
     deodex -z $ROMPATH/miui_*.zip -d $ROMPATH/miui
-    cp -r $ROMPATH/miui/* $ROMPATH/new/
+    cp -r --remove-destination $ROMPATH/miui/* $ROMPATH/new/
 }
 
 function clean() {
@@ -200,7 +173,7 @@ function sign_apk() {
 }
 
 function sign_zip() {
-    java -jar signapk.jar security/testkey.x509.pem security/testkey.pk8 $1.zip $1-signed.zip
+    signapk security/testkey.x509.pem security/testkey.pk8 $1.zip $1-signed.zip
 }
 
 function sign() {
@@ -210,10 +183,18 @@ function sign() {
     sign_zip "rom/miui_update"
 }
 
+function addgapps() {
+    cp -r --remove-destination gapps/* rom/new/
+}
+
+function addprebuild() {
+    cp -r --remove-destination apk/* rom/new/system/app
+}
+
 function setlang() {
     local ANSWER
     while [ -z $LANG ]; do
-        echo -n "Which would you like? ["$DEFAULT_LANG"] "
+        echo -n "Choose language ["$DEFAULT_LANG"] "
         if [ -z "$1" ] ; then
             read ANSWER
         else
@@ -228,7 +209,7 @@ function setlang() {
             ;;
         *)
             echo
-            echo "I didn't understand your response. Please try again."
+            echo "Language not implemented!"
             echo
             ;;
         esac
