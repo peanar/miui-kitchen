@@ -1,7 +1,11 @@
 #!/bin/bash
 LANGPATH="languages"
 LANG=
+REGION=
+TIMEZONE=
 DEFAULT_LANG="it"
+DEFAULT_REGION="IT"
+DEFAULT_TIMEZONE="Europe/Rome"
 ROMPATH="rom"
 apklist="tools/apk.list"
 xmllist="tools/xml.list"
@@ -36,20 +40,24 @@ function fixframework() {
     rm framework/framework-res/res/values/plurals.xml.bak
     sed -i.bak 's/第 %d 项，共 %d 项/第 %1\$d 项，共 %2\$d 项/' framework/framework-res/res/values-zh-rCN/plurals.xml
     rm framework/framework-res/res/values-zh-rCN/plurals.xml.bak
-    sed -i.bak '/<\/resources>/i \
-    <item type="id" name="flag">false</item> \
-    <item type="id" name="titleContent">false</item> \
-    <item type="id" name="titlePrevious">false</item> \
-    <item type="id" name="titleNext">false</item> \
-    <item type="id" name="detaillayout">false</item> \
-    <item type="id" name="scrollview">false</item> \
-    <item type="id" name="parentlayout">false</item> \
-    <item type="id" name="componentGrid">false</item> \
-    <item type="id" name="resourcefile">false</item> \
-    <item type="id" name="componentTitle">false</item>' framework/framework-miui-res/res/values/ids.xml
+}
+
+function fixframeworkmiui() {
+#    sed -i.bak -e '/<\/resources>/i \
+#    <item type="id" name="flag">false</item> \
+#    <item type="id" name="titleContent">false</item> \
+#    <item type="id" name="titlePrevious">false</item> \
+#    <item type="id" name="titleNext">false</item> \
+#    <item type="id" name="detaillayout">false</item> \
+#    <item type="id" name="scrollview">false</item> \
+#    <item type="id" name="parentlayout">false</item> \
+#    <item type="id" name="componentGrid">false</item> \
+#    <item type="id" name="resourcefile">false</item> \
+#    <item type="id" name="componentTitle">false</item>' framework/framework-miui-res/res/values/ids.xml
+    sed -i.bak -e 's/<id/<item type="id"/' -e 's/<\/id>/<\/item>/' framework/framework-miui-res/res/values/ids.xml
     rm framework/framework-miui-res/res/values/ids.xml.bak
-    sed -i.bak -e '/"0x03070000"/i \
-    <public type="array" name="android_config_statusBarIcons" id="0x0306000a" />' -e '/"0x030c0000"/i \
+#   sed -i.bak -e '/"0x03070000"/i <public type="array" name="android_config_statusBarIcons" id="0x0306000a" />' framework/framework-miui-res/res/values/public.xml
+    sed -i.bak -e '/"0x030c0000"/i \
     <public type="id" name="flag" id="0x030b008c" /> \
     <public type="id" name="titleContent" id="0x030b008d" /> \
     <public type="id" name="titlePrevious" id="0x030b008e" /> \
@@ -61,6 +69,12 @@ function fixframework() {
     <public type="id" name="resourcefile" id="0x030b0094" /> \
     <public type="id" name="componentTitle" id="0x030b0095" />' framework/framework-miui-res/res/values/public.xml
     rm framework/framework-miui-res/res/values/public.xml.bak
+    sed -i.bak -e 's/<anim/<item type="anim"/' -e 's/<\/anim>/<\/item>/' framework/framework-miui-res/res/values/anims.xml
+    rm framework/framework-miui-res/res/values/anims.xml.bak
+    sed -i.bak -e 's/<layout/<item type="layout"/' -e 's/<\/layout>/<\/item>/' framework/framework-miui-res/res/values/layouts.xml
+    rm framework/framework-miui-res/res/values/layouts.xml.bak
+    sed -i.bak -e 's/<xml/<item type="xml"/' -e 's/<\/xml>/<\/item>/' framework/framework-miui-res/res/values/xmls.xml
+    rm framework/framework-miui-res/res/values/xmls.xml.bak
 }
 
 function fixmiuicompass() {
@@ -75,9 +89,7 @@ function fixmusic() {
 
 function fix() {
     fixemail
-    fixmusic
-    fixframework
-    fixmiuicompass
+    fixframeworkmiui
 }
 
 function apktool_build() {
@@ -92,7 +104,7 @@ function build() {
 }
 
 function apktool_decode() {
-    apktool -q d -s -f --keep-broken-res rom/miui/system/${2}/${1}.apk ${2}/$1
+    apktool -q d -f rom/miui/system/${2}/${1}.apk ${2}/$1
 }
 
 function decode() {
@@ -128,7 +140,7 @@ function translate() {
     for files in ${tras[@]}; do
         xml_copy $(echo $files | tr ":" " ")
     done
-    build_prop rom/new/system/build.prop it IT Europe/Rome
+    build_prop rom/new/system/build.prop $LANG $REGION $TIMEZONE
 }
 
 function setup() {
@@ -141,8 +153,13 @@ function setup() {
     mkdir -p gapps
 }
 
-function extract() {
+function extract_odexed() {
     deodex -z $ROMPATH/miui_*.zip -d $ROMPATH/miui
+    cp -r --remove-destination $ROMPATH/miui/* $ROMPATH/new/
+}
+
+function extract() {
+    unzip -o -q $ROMPATH/miuiandroid_*.zip -d $ROMPATH/miui
     cp -r --remove-destination $ROMPATH/miui/* $ROMPATH/new/
 }
 
@@ -159,13 +176,17 @@ function clean() {
 #    mv temp.zip miui_update.zip
 #}
 
+function delete_meta_info() {
+    zip -d $1 "META-INF/*"
+}
+
 function sign_apk() {
     echo ">>> Sign apks under dir $1..."
     for pkg in `find $1 -name "*.apk"`
     do
         echo ">>> Sign for $pkg"
-        #delete_meta_info $pkg
-        java -jar signapk.jar tools/security/testkey.x509.pem tools/security/testkey.pk8 $pkg $pkg.signed
+        delete_meta_info $pkg
+        signapk -w tools/security/testkey.x509.pem tools/security/testkey.pk8 $pkg $pkg.signed
         zipalign 4 $pkg.signed $pkg.signed.aligned
         mv $pkg.signed.aligned $pkg
         rm $pkg.signed
@@ -173,13 +194,15 @@ function sign_apk() {
 }
 
 function sign_zip() {
-    signapk security/testkey.x509.pem security/testkey.pk8 $1.zip $1-signed.zip
+    signapk -w tools/security/testkey.x509.pem tools/security/testkey.pk8 $1.zip $1-signed.zip
 }
 
 function sign() {
     sign_apk "rom/new/system/app"
     sign_apk "rom/new/system/framework"
-    zip -q -r -y rom/miui_update.zip rom/new/*
+    cd rom/new/
+    zip -q -r -y ../miui_update.zip .
+    cd -
     sign_zip "rom/miui_update"
 }
 
@@ -203,9 +226,13 @@ function setlang() {
         case $ANSWER in
         "")
             LANG=$DEFAULT_LANG
+            REGION=$DEFAULT_REGION
+            TIMEZONE=$DEFAULT_TIMEZONE
             ;;
         it)
             LANG="it"
+            REGION="IT"
+            TIMEZONE="Europe/Rome"
             ;;
         *)
             echo
